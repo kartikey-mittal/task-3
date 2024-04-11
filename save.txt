@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scroll Animation</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: red;
+        }
+        #svgContainer {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            height: 350px;
+            z-index: 2; /* Ensure SVG is in front */
+        }
+        #svgObject {
+            width: 100%;
+            height: 100%;
+        }
+        .section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 1; /* Ensure sections are behind SVG */
+        }
+        .section1 { background-color: yellow; }
+        .section2 { background-color: lightgreen; }
+        .section3 { background-color: pink; }
+        .section4 { background-color: purple; }
+        .section5 { background-color: orange; }
+        .section6 { background-color: violet; }
+        .section7 { background-color: darkgreen; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
+</head>
+<body>
+    <div id="svgContainer">
+        <object id="svgObject" type="image/svg+xml" data="svg with paths.svg">Your browser does not support SVG</object>
+    </div>
+    <div class="section section1"></div>
+    <div class="section section2"></div>
+    <div class="section section3"></div>
+    <div class="section section4"></div>
+    <div class="section section5"></div>
+    <div class="section section6"></div>
+    <div class="section section7"></div>
+    <div style="height:2000px"></div>
+
+    <script>
+        var counter = { var: 0 };
+
+        window.onload = function () {
+            var svgDoc = document.getElementById("svgObject").contentDocument;
+            var $path = $(svgDoc.getElementById("Opaque_Ring"));
+
+            $(window).scroll(function () {
+                var scrollTop = $(window).scrollTop();
+                var sectionIndex = Math.floor(scrollTop / 200); // Adjust the divisor based on your section height
+
+                // Update the stroke-dasharray
+                TweenMax.to(counter, 0.5, {
+                    var: scrollTop / 150,
+                    onUpdate: function () {
+                        $path.css("stroke-dasharray", Math.floor(counter.var) * 140 + ",1000");
+                    },
+                    ease: Linear.easeNone
+                });
+
+                // Show the current section and hide the others
+                $('.section').css('opacity', 0);
+                $('.section' + (sectionIndex + 1)).css('opacity', 1);
+            });
+        };
+    </script>
+</body>
+</html>
